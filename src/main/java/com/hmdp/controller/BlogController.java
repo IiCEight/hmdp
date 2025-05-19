@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * <p>
@@ -46,8 +49,10 @@ public class BlogController {
     @PutMapping("/like/{id}")
     public Result likeBlog(@PathVariable("id") Long id) {
         // 修改点赞数量
-        blogService.update()
-                .setSql("liked = liked + 1").eq("id", id).update();
+        // blogService.update()
+        //         .setSql("liked = liked + 1").eq("id", id).update();
+        blogService.likeBlog(id);
+
         return Result.ok();
     }
 
@@ -77,7 +82,20 @@ public class BlogController {
             User user = userService.getById(userId);
             blog.setName(user.getNickName());
             blog.setIcon(user.getIcon());
+            blogService.isBlogLiked(blog);
+            
         });
         return Result.ok(records);
+    }
+
+    @GetMapping("/{id}")
+    public Result queryBlogById(@PathVariable Long id) {
+        return blogService.queryBlogById(id);
+    }
+
+    @GetMapping("/likes/{id}")
+    public Result queryBlogLikes(@PathVariable Long id) {
+        List<UserDTO> response = blogService.queryBlogLikes(id);
+        return Result.ok(response);
     }
 }
