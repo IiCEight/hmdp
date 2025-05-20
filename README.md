@@ -55,12 +55,8 @@ This project is suitable for learning enterprise-level backend development and h
 
 ## Notes
 
-- The `master` branch contains the full-featured code; the `init` branch is for step-by-step learning.
 - For high-concurrency features (like seckill), ensure Redis is running and properly configured.
-- If you encounter Redis Stream errors on the `master` branch, initialize the stream group:
-  ```sh
-  XGROUP CREATE stream.orders g1 $ MKSTREAM
-  ```
+
 
 ## Java后端实现简历描述
 
