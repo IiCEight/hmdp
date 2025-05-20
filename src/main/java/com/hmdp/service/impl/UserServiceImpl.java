@@ -79,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         User user = query().eq("phone", phone).one();
         if(user == null) {
-            createUserWithPhone(phone);
+            user = createUserWithPhone(phone);
         }
 
         // session.setAttribute("user", user);
@@ -96,8 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
             CopyOptions.create()
                 .setIgnoreNullValue(true)
-                .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
-
+                .setFieldValueEditor((fieldName, fieldValue) -> fieldValue == null ? null : fieldValue.toString()));
 
 
         String key = "login:token:" + token;
@@ -114,6 +113,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setPhone(phone);
         user.setNickName("user_"+ RandomUtil.randomString(10));
 
+        save(user);
+        log.info("User id {}", user.getId());
         return user;
     }
 

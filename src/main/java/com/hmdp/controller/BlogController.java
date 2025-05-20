@@ -10,12 +10,13 @@ import com.hmdp.service.IBlogService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author 虎哥
  * @since 2021-12-22
  */
+@Slf4j
 @RestController
 @RequestMapping("/blog")
 public class BlogController {
@@ -97,5 +99,20 @@ public class BlogController {
     public Result queryBlogLikes(@PathVariable Long id) {
         List<UserDTO> response = blogService.queryBlogLikes(id);
         return Result.ok(response);
+    }
+
+    @GetMapping("/of/user")
+    public Result queryBlogByUserId(
+        @RequestParam(value = "current", defaultValue = "1") Integer current,
+        @RequestParam("id") Long id
+    ){
+        log.info("current {} id {}", current, id);
+        Page<Blog> page = blogService.query()
+            .eq("user_id", id)
+            .page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
+
+        List<Blog> records = page.getRecords();
+
+        return Result.ok(records);
     }
 }

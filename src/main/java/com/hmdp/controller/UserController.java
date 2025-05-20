@@ -1,17 +1,31 @@
 package com.hmdp.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmdp.dto.LoginFormDTO;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
+import com.hmdp.entity.Blog;
+import com.hmdp.entity.User;
 import com.hmdp.entity.UserInfo;
+import com.hmdp.service.IBlogService;
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
+import com.hmdp.utils.RedisConstants;
+import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
+
+import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -32,6 +46,12 @@ public class UserController {
 
     @Resource
     private IUserInfoService userInfoService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private IBlogService blogService;
 
     /**
      * 发送手机验证码
@@ -56,9 +76,13 @@ public class UserController {
      * @return 无
      */
     @PostMapping("/logout")
-    public Result logout(){
-        // TODO 实现登出功能
-        return Result.fail("功能未完成");
+    public Result logout(HttpServletRequest httpServletRequest){
+            // String key = RedisConstants.LOGIN_USER_KEY + token;
+        String token = httpServletRequest.getHeader("token");
+        String key = RedisConstants.LOGIN_USER_KEY + token;
+        log.info("delete key {}", key);
+        stringRedisTemplate.delete(key);
+        return Result.ok();
     }
 
     @GetMapping("/me")
@@ -81,5 +105,16 @@ public class UserController {
         info.setUpdateTime(null);
         // 返回
         return Result.ok(info);
+    }
+
+    @GetMapping("/{id}")
+    public Result queryUserById(@PathVariable("id") Long userId) {
+        log.info("userId {}", userId);
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.fail("null");
+        }
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        return Result.ok(userDTO);
     }
 }

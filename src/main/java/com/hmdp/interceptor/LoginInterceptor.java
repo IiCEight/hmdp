@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.hmdp.dto.UserDTO;
@@ -34,4 +35,5 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         return true;        
     }
+
 }
