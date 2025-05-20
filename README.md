@@ -1,31 +1,63 @@
-# 代码使用说明(本项目来自b站[黑马程序员](https://space.bilibili.com/37974444)[redis教程](https://www.bilibili.com/video/BV1cr4y1671t)，仅供参考)
+# Project Introduction
 
-项目代码包含2个分支：
-- master : 主分支，包含完整版代码，作为大家的编码参考使用
-- init : 初始化分支，实战篇的初始代码，建议大家以这个分支作为自己开发的基础代码
-- 前端资源在src/main/resources/nginx-1.18.0下
+This project is a high-performance review and coupon system inspired by the "HeiMa DianPing" course. It is built with Spring Boot, MyBatis-Plus, and Redis, and demonstrates practical solutions for high-concurrency scenarios such as distributed locking, Redis Streams, cache penetration/breakdown/avalanche, and more. The system includes core features like user login, merchant reviews, following, flash sale coupons, blog publishing, and commenting. The frontend resources are located in `src/main/resources/nginx-1.18.0`.
 
-视频地址:
-- [黑马程序员Redis入门到实战教程，深度透析redis底层原理+redis分布式锁+企业解决方案+redis实战](https://www.bilibili.com/video/BV1cr4y1671t)
-- [https://www.bilibili.com/video/BV1cr4y1671t](https://www.bilibili.com/video/BV1cr4y1671t)
-  - P24起 实战篇
+This project is suitable for learning enterprise-level backend development and hands-on practice with Redis and distributed systems.
 
-## 1.下载
-克隆完整项目
-```git
-git clone https://github.com/cs001020/hmdp.git
-```
-切换分支
-```git
-git checkout init
-```
+## Features
 
-## 2.常见问题
-部分同学直接使用了master分支项目来启动，控制台会一直报错:
-```
-NOGROUP No such key 'stream.orders' or consumer group 'g1' in XREADGROUP with GROUP option
-```
-这是因为我们完整版代码会尝试访问Redis，连接Redis的Stream。建议同学切换到init分支来开发，如果一定要运行master分支，请先在Redis运行一下命令：
-```text
-XGROUP CREATE stream.orders g1 $ MKSTREAM
-```
+- **User Authentication:** Secure login and registration with session/token management.
+- **Merchant Reviews:** Users can post, view, and interact with shop reviews.
+- **Follow System:** Users can follow/unfollow others and view followed users’ activities.
+- **Flash Sale Coupons:** High-concurrency voucher (seckill) system using Redis Streams and distributed locks.
+- **Blog System:** Users can publish blogs, comment, and interact with posts.
+- **Commenting:** Nested comment support for blogs and shops.
+- **High-Concurrency Solutions:** Implements distributed locking, cache strategies (penetration, breakdown, avalanche), and Redis Stream for order processing.
+- **Frontend Resources:** Located in `src/main/resources/nginx-1.18.0`.
+
+## Technology Stack
+
+- **Backend:** Java, Spring Boot, MyBatis-Plus
+- **Database:** MySQL
+- **Cache & Messaging:** Redis (including Streams, distributed locks, caching)
+- **Frontend:** Static resources (HTML/CSS/JS) in the `nginx-1.18.0` directory
+- **Build Tool:** Maven
+
+## Project Structure
+
+- `src/main/java/com/hmdp/`
+  - `controller/` — RESTful API controllers
+  - `service/` — Business logic and interfaces
+  - `entity/` — Data models/entities
+  - `mapper/` — MyBatis-Plus mappers for database access
+  - `utils/` — Utility classes (e.g., cache client, password encoder)
+  - `config/` — Spring and MyBatis configuration
+- `src/main/resources/`
+  - `application.yaml` — Main configuration file
+  - `mapper/` — MyBatis XML mapping files
+  - `nginx-1.18.0/` — Frontend static resources
+
+## Getting Started
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/cs001020/hmdp.git
+   ```
+2. **Switch to the initial branch for hands-on practice:**
+   ```sh
+   git checkout init
+   ```
+3. **Configure your database and Redis in `application.yaml`.**
+4. **Start the backend application:**
+   - Use your IDE or run with Maven:  
+     `mvn spring-boot:run`
+5. **Serve the frontend resources using nginx or your preferred static server.**
+
+## Notes
+
+- The `master` branch contains the full-featured code; the `init` branch is for step-by-step learning.
+- For high-concurrency features (like seckill), ensure Redis is running and properly configured.
+- If you encounter Redis Stream errors on the `master` branch, initialize the stream group:
+  ```sh
+  XGROUP CREATE stream.orders g1 $ MKSTREAM
+  ```
