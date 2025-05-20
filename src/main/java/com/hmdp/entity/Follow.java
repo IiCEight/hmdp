@@ -47,5 +47,4 @@ public class Follow implements Serializable {
      */
     private LocalDateTime createTime;
 
-
 }

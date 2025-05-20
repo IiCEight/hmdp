@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hmdp.dto.Result;
+import com.hmdp.dto.ScrollResult;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
 
@@ -24,5 +25,9 @@ public interface IBlogService extends IService<Blog> {
     void isBlogLiked(Blog blog);
 
     List<UserDTO> queryBlogLikes(Long id);
+
+    Long saveBlog(Blog blog);
+
+    ScrollResult queryBlogOfFollow(Long max, Long offset);
 
 }
